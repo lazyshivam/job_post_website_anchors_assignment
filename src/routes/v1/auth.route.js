@@ -9,7 +9,7 @@ const router = express.Router();
 
 // router.route('/change-password').post(companyAuth('getUsersWithoutPagination'), userController.changePassword);
 
-router.post('/auth/sendOtp', validate(authValidatoin.otp), authController.sendOptToUser);
+router.post('/auth/sendOtp', validate(authValidatoin.otp), authController.sendOptToUser); 
 router.post('/auth/register', validate(authValidatoin.register), authController.createUser);
 router.post('/auth/login', validate(authValidatoin.login), authController.login);
 router.post('/auth/logout', validate(authValidatoin.logout), authController.logout);

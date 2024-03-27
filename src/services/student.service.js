@@ -16,7 +16,31 @@ const addStudentDetails = async (userDetails,userId) => {
 
 }
 
+const getStudentDetails = async (userId) => {
+  console.log('getStudentDetails',userId)
+  const result = await StudentModel.find({ user: userId })
+  return {data:result,code:CONSTANT.SUCCESSFUL,message:"User Details"};
+
+}
+
+const getAllAppliedJobs = async (userId) => {
+  const result = await StudentModel.find({ user: userId });
+  return { data: result, code: CONSTANT.SUCCESSFUL, message: CONSTANT.JOB_LIST}
+}
+const applyForJob = async (userId,role,amountSpent) => {
+  const result = await StudentModel.findByIdAndUpdate(userId, {
+    $push: {
+      appliedJobs: {
+        role: role, // Reference the job
+        amountSpent: amountSpent, // Default amount spent (can be modified based on your logic)
+      },
+    },
+    new: true, // Return the updated document
+  });
+  return {data:result,code:CONSTANT.SUCCESSFUL,message:"Applied for job successfully"}
+}
 
 
-module.exports = { addStudentDetails };
+
+module.exports = { addStudentDetails,getAllAppliedJobs,applyForJob,getStudentDetails };
 

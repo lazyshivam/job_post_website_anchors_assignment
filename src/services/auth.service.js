@@ -54,8 +54,8 @@ const create = async (userBody) => {
   return { data: { user, token }, code: CONSTANT.SUCCESSFUL, message: CONSTANT.USER_CREATE };
 };
 
-const loginUserWithEmail = async (email) => {
-  const user = await User.findOne({email});
+const loginUserWithEmail = async (email,userType) => {
+  const user = await User.findOne({email,userType});
   if (!user) {
     return { data: {}, code: CONSTANT.UNAUTHORIZED, message: CONSTANT.UNAUTHORIZED_MSG };
   }

@@ -7,7 +7,7 @@ const jobSchema = new mongoose.Schema({
   jobRole: {
     type: String,
     required: true,
-    unique: true,
+    // unique: true,
   },
   company: { // Reference to the company that posted the role
     type: mongoose.Schema.Types.ObjectId,

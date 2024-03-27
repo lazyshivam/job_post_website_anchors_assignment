@@ -9,11 +9,33 @@ const addStudent = catchAsync(async (req, res) => {
     const userId = req.user.id;
    
   const result = await studentService.addStudentDetails(req.body,userId);
-  res.status(httpStatus.OK).send(result);
+  res.send(result);
+});
+
+const getStudentDetailsById = catchAsync(async (req, res) => {
+  const userId = req.user.id;
+  
+  const result = await studentService.getStudentDetails(userId);
+  res.send(result);
+});
+
+const apply = catchAsync(async (req, res) => {
+  const userId = req.user.id;
+  const { role, amountSpent } = req.body;
+  const result = await studentService.applyForJob(userId,role,amountSpent);
+  res.send(result);
+});
+
+const getStudentApply = catchAsync(async (req, res) => {
+  const userId = req.user.id;
+ 
+  const result = await studentService.getAllAppliedJobs(userId);
+  res.send(result);
 });
 
 
 
 
 
-module.exports = {addStudent};
+
+module.exports = {addStudent,getStudentApply,getStudentDetailsById,apply};

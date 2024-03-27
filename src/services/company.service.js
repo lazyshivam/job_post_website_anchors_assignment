@@ -8,7 +8,11 @@ const CONSTANT = require('../config/constant');
 
 
 const addCompanyDetails = async (companyDetails,userId) => {
-
+   
+    const companyWithUserId = await CompanyModel.findOne({ user: userId });
+    if (companyWithUserId) {
+        return {data:[],code:CONSTANT.BAD_REQUEST,message:CONSTANT.USER_ALREADY_EXISTS}
+    }
     const details = {
         user: userId,
         ...companyDetails
@@ -21,7 +25,7 @@ const addCompanyDetails = async (companyDetails,userId) => {
 
 const getCompanyDetailsById = async (userId) => {
       
-    const result = await CompanyModel.find({user:userId}).populate('postedJobs.role');
+    const result = await CompanyModel.find({ user: userId });
 
     return {data:result,code:CONSTANT.SUCCESSFUL,message:CONSTANT.GET_COMPANY_DETAILS};
 
@@ -56,5 +60,22 @@ const postJobDetails = async (jobDetails,companyId) => {
     return { data: result, code: CONSTANT.SUCCESSFUL, message: CONSTANT.JOB_POSTED };
 }
 
-module.exports = { addCompanyDetails, getCompanyDetailsById,deleteCompanyDetails,postJobDetails };
+const getJobDetails = async (userId) => {
+    console.log(userId)
+    const companyWithUserId = await CompanyModel.findOne({ user: userId._id });
+    console.log(companyWithUserId)
+    if (!companyWithUserId) {
+        return {data:[],code:CONSTANT.BAD_REQUEST,message:CONSTANT.NOT_FOUND}
+    }
+
+    const result = await JobModel.find({company:companyWithUserId._id});
+     
+    console.log(result);
+    return { data: result, code: CONSTANT.SUCCESSFUL, message: CONSTANT.JOB_LIST };
+}
+const getAllJobDetails = async () => { 
+    const result = await JobModel.find();
+    return { data: result, code: CONSTANT.SUCCESSFUL,message:CONSTANT.JOB_LIST }; 
+}
+module.exports = { addCompanyDetails, getAllJobDetails,getCompanyDetailsById,deleteCompanyDetails,postJobDetails ,getJobDetails};
 

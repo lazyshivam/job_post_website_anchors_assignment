@@ -18,9 +18,9 @@ const createUser = catchAsync(async (req, res) => {
 });
 
 const login = catchAsync(async (req, res) => {
-    var {email} = req.body;
+    var {email,userType} = req.body;
     email = email.toLocaleLowerCase()
-    const user = await authService.loginUserWithEmail(email);
+    const user = await authService.loginUserWithEmail(email,userType);
     res.send(user);
 });
 

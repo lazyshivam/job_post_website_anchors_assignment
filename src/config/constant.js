@@ -21,7 +21,7 @@ module.exports = {
     NO_TOKEN: 'Please add authentication token',
     PERMISSION_DENIED:`You don't have permission for this`,
     INVALID_MSG: 'Invalid Credentials, Please use correct api key & api key secret',
-    UNAUTHORIZED_MSG: 'Invalid Credentials, Please use correct email & password combination',
+    UNAUTHORIZED_MSG: 'Invalid Credentials, Please use correct email ',
     OLD_PASSWORD_MSG: 'Please enter a valid old password',
     Login_MSG: 'Logged In',
     Logout_MSG: 'Logged out',
@@ -38,7 +38,7 @@ module.exports = {
     COMPANY_DELETED: 'Company deleted successfully',
     JOB_POSTED: 'Job posted successfully',
     STUDENT_ADDED:'Student added successfully',
-    
+    JOB_LIST:"Job List"
 
     
 
