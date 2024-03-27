@@ -19,6 +19,7 @@ import {
     DialogTrigger,
     DialogFooter
 } from "@/components/ui/dialog"
+import { toast } from 'react-toastify';
 
 const Register = () => {
     const buttonRef = useRef(null);
@@ -48,8 +49,10 @@ const Register = () => {
             }
             console.log('OTP sent successfully',data);
             setIsLoading(false);
+            toast.success('Otp sent successfully');
             buttonRef.current.click();
         } catch (error) {
+            toast.error('Error sending OTP')
             console.error('Error sending OTP:', error);
             // Display error message to the user
         }
@@ -66,6 +69,7 @@ const Register = () => {
 
     const handleRegister = async () => {
         // event.preventDefault();
+        setIsLoading(true);
         try {
             const response = await fetch(`${Base_Url}/user/auth/register`, {
                 method: 'POST',
@@ -77,21 +81,26 @@ const Register = () => {
                 }),
             });
 
-            if (!response.ok) {
-                throw new Error(`Registration failed with status: ${response.status}`);
+            
+            const res = await response.json();
+            if (res.code === 200) {
+                dispatch(loginSuccess(res.data.user));
+                localStorage.setItem('accessToken', res.data.token.refresh.token);
+                console.log('Registration successful:', res); // For debugging
+                toast.success('Registration successful');
+                // After successful registration, redirect to appropriate route
+                navigate('/home');
             }
-
-            const data = await response.json();
-            dispatch(loginSuccess(data.data.user));
-            localStorage.setItem('accessToken', data.data.token.access.token);
-            console.log('Registration successful:', data); // For debugging
-
-            // After successful registration, redirect to appropriate route
-            navigate('/home');
+            else if (res.code === 400 || res.code===401) {
+                toast.error('Registration failed');
+            }
+           
         } catch (error) {
-
+            toast.error('Registration failed')
             console.error('Registration error:', error);
 
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -167,7 +176,7 @@ const Register = () => {
 
                         </div>
                         <DialogFooter>
-                            <Button type="button" onClick={handleRegister}>Register</Button>
+                        <Button type="button" onClick={handleRegister}>{isLoading?'Please wait..':'Register' }</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>

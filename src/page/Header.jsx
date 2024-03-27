@@ -31,6 +31,12 @@ const Header = () => {
                 <h1 className="text-2xl font-bold">YourPlace</h1>
             </Link>
             <nav className="flex space-x-4 mr-8">
+                <Link to="/home">
+                    <Button variant="outlined" color="white">Home</Button>
+                </Link>
+                <Link to="/dashboard">
+                    <Button variant="outlined" color="white">Dashboard</Button>
+                </Link>
                 <Link to="#">
                     <Button variant="outlined" color="white">About</Button>
                 </Link>
@@ -41,21 +47,21 @@ const Header = () => {
                 <DropdownMenu >
                     <DropdownMenuLabel>{"User"}</DropdownMenuLabel>
                     <DropdownMenuTrigger className='border-slate-300 rounded-md border p-1 text-red-400'><LuUser2 className='text-2xl' /></DropdownMenuTrigger>
-                    <DropdownMenuSeparator/>
+                    <DropdownMenuSeparator />
                     <DropdownMenuContent className="flex flex-col justify-center items-center">
                         <DropdownMenuItem>
                             <p className="block px-4 py-2 text-sm text-gray-700">{userInfo && userInfo.user?.email || "Shivam"}</p> {/* Replace with user name */}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
-                            <Link to="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Dashboard
                             </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                             {
-                                userInfo?(<Button onClick={handleLogout} className="">Logout</Button>):(
+                                userInfo ? (<Button onClick={handleLogout} className="">Logout</Button>) : (
                                     <Button onClick={() => navigate('/login')} className="">Login</Button>
-                                    
+
                                 )
                             }
                         </DropdownMenuItem>

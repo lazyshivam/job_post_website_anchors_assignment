@@ -3,13 +3,16 @@ import { useNavigate } from 'react-router-dom'; // For navigation after registra
 import { Base_Url } from '@/config/config';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '@/service/userSlice';
+import  { AlertComponent }  from '@/helper/AlertComponent';
+import { ToastContainer, toast } from 'react-toastify';
 const Login = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [userType, setUserType] = useState('');
     const [email, setEmail] = useState('');
-
+    const [isLoading,setIsLoading] = useState(false);
+   
     const handleUserTypeChange = (event) => {
         setUserType(event.target.value);
     };
@@ -21,6 +24,7 @@ const Login = () => {
     const handleLogin = async (event) => {
         event.preventDefault();
         try {
+            setIsLoading(true);
             const response = await fetch(`${Base_Url}/user/auth/login`, {
                 method: 'POST',
                 headers: {
@@ -36,22 +40,33 @@ const Login = () => {
                 throw new Error(`Registration failed with status: ${response.status}`);
             }
 
-            const data = await response.json();
-            dispatch(loginSuccess(data.data.user));
-            localStorage.setItem('accessToken', data.data.token.access.token);
-            console.log('Logged in successful:', data); // For debugging
-            console.log('Navigating to /home'); 
+        const res = await response.json();
+          if(res.code==200)
+          {
+            dispatch(loginSuccess(res.data.user));
+            localStorage.setItem('accessToken', res.data.token.refresh.token);
+            console.log('Logged in successful:', res); // For debugging
+              console.log('Navigating to /home'); 
+              toast(res.message);
             // After successful registration, redirect to appropriate route
             navigate('/home',{replace:true});
-        } catch (error) {
-
-            console.error('Registration error:', error);
-            // Display error message to the user
         }
+          else if (res.code === 401) {
+              toast.error(res.message)
+        
+        }
+        } catch (error) {
+            console.log(error)
+        } finally {
+            
+            setIsLoading(false);
+        }
+       
     };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+             {/* {showAlert && <Alert type={alertType} message={alertMessage} />} */}
             <div className="max-w-md w-full space-y-8">
                 <div>
                     <h1 className="text-4xl font-bold text-center mb-4">Welcome!</h1>
@@ -88,7 +103,7 @@ const Login = () => {
                     </div>
 
                     <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                        Login
+                       {isLoading? "Please wait...":'Login'}
                     </button>
                 </form>
             </div>
