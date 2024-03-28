@@ -38,6 +38,25 @@ const sendOTPOnMail = async (userEmail,otp) => {
   }
 };
 
+const sendCongratulationsEmail = async (to, role) => {
+  console.log(to);
+  const htmlBody = `
+  <body>
+    <p>Congratulations!</p>
+    <p>Your job posting for "${role}" has been successfully published.</p>
+    <p>Thank you for choosing us. We wish you the best of luck with your recruitment process.</p>
+    <p>Need help or have questions? Just reply to this email, we'd love to assist you.</p>
+  </body>
+  `;
+  try {
+    await sendEmail(to, 'Congratulations on Your Job Posting!', htmlBody);
+    return true;
+  } catch (error) {
+    throw new Error('Failed to send congratulations email');
+  }
+};
+
 module.exports = {
-  sendOTPOnMail:sendOTPOnMail,
+  sendOTPOnMail: sendOTPOnMail,
+  sendCongratulationsEmail:sendCongratulationsEmail,
 };

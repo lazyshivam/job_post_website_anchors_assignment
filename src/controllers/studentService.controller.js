@@ -21,8 +21,9 @@ const getStudentDetailsById = catchAsync(async (req, res) => {
 
 const apply = catchAsync(async (req, res) => {
   const userId = req.user.id;
+  const companyId = req.params.id;
   const { role, amountSpent } = req.body;
-  const result = await studentService.applyForJob(userId,role,amountSpent);
+  const result = await studentService.applyForJob(userId,companyId,role,amountSpent);
   res.send(result);
 });
 

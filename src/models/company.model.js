@@ -3,7 +3,7 @@ const { toJSON } = require('./plugins');
 var mongoosePaginate = require('mongoose-paginate');
 
 const companySchema = mongoose.Schema({
-  name: { type: String, required: true }, 
+  name: { type: String}, 
   user:{type:mongoose.Schema.Types.ObjectId,ref:'User'},
   rupees: { type: Number, default: 200 },
   website: { type: String }, 
