@@ -1,8 +1,10 @@
 import { Base_Url } from '@/config/config';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const CreateCompanyProfileForm = () => {
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -16,10 +18,6 @@ const CreateCompanyProfileForm = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    //   const handleFileChange = (e) => {
-    //     const file = e.target.files[0];
-    //     setFormData({ ...formData, companyLogo: file });
-    //   };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,18 +28,7 @@ const CreateCompanyProfileForm = () => {
             return;
         }
         console.log(formData);
-        // Create FormData object to send file
-        //   name: Joi.string().trim().required().min(3), 
-        // rupees: Joi.number().default(200),
-        // website: Joi.string().uri({ scheme: ['http', 'https'] }).optional(), 
-        // teamSize: Joi.string().valid('1-10', '11-50', '50+').optional(),
-        // logo: Joi.string().uri({ scheme: ['http', 'https'] }).optional(),
-        // description: Joi.string().trim().optional(),
-        // const formDataToSend = new FormData();
-        // formDataToSend.append('name', formData.companyName);
-        // formDataToSend.append('website', formData.websiteLink);
-        // formDataToSend.append('teamSize', formData.teamSize);
-        // formDataToSend.append('logo', formData.companyLogo);
+      
 
         try {
             // Make API request
@@ -57,9 +44,9 @@ const CreateCompanyProfileForm = () => {
             const res = await response.json();
             console.log(res);
             if (res.code === 200) {
-
-                toast.success(res.message)
-
+                console.log("Profile details added",res)
+                toast.success("Profile created successfully")
+                navigate('/dashboard');
                 // Clear form data
                 setFormData({
                     name: '',
@@ -98,7 +85,7 @@ const CreateCompanyProfileForm = () => {
                             <option value="">Select Team Size</option>
                             <option value="1-10">1-10</option>
                             <option value="11-50">11-50</option>
-                            <option value="more than 50">More than 50</option>
+                            <option value="50+">More than 50</option>
                         </select>
                     </div>
                     <div className="mb-4">

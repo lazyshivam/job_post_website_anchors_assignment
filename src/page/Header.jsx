@@ -31,7 +31,7 @@ const Header = () => {
                 <h1 className="text-2xl font-bold">YourPlace</h1>
             </Link>
             <nav className="flex space-x-4 mr-8">
-                <Link to="/home">
+                <Link to="/">
                     <Button variant="outlined" color="white">Home</Button>
                 </Link>
                 <Link to="/dashboard">
@@ -45,12 +45,12 @@ const Header = () => {
                 </Link>
                 <Button onClick={() => navigate('/register')} className="">Signup</Button>
                 <DropdownMenu >
-                    <DropdownMenuLabel>{"User"}</DropdownMenuLabel>
+                    <DropdownMenuLabel>{userInfo?.email||"User"}</DropdownMenuLabel>
                     <DropdownMenuTrigger className='border-slate-300 rounded-md border p-1 text-red-400'><LuUser2 className='text-2xl' /></DropdownMenuTrigger>
                     <DropdownMenuSeparator />
                     <DropdownMenuContent className="flex flex-col justify-center items-center">
                         <DropdownMenuItem>
-                            <p className="block px-4 py-2 text-sm text-gray-700">{userInfo && userInfo.user?.email || "Shivam"}</p> {/* Replace with user name */}
+                            <p className="block px-4 py-2 text-sm text-gray-700">{userInfo?.email||"User"}</p> {/* Replace with user name */}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                             <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">

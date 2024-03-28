@@ -18,20 +18,6 @@ const StudentHome = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [postedJobs, setPostedJobs] = useState([
-        {
-            id: 1,
-            roleName: "Software Engineer",
-            location: "Mumbai",
-            minCTC: 8,
-            maxCTC: 15
-        },
-        {
-            id: 2,
-            roleName: "Data Analyst",
-            location: "Bangalore",
-            minCTC: 6,
-            maxCTC: 12
-        }
     ]);
 
     const getCompanyDetails = async () => {
@@ -76,13 +62,13 @@ const StudentHome = () => {
     useEffect(() => {
         getCompanyDetails();
     }, [])
-    const handleApplyJob = async(id) => {
+    const handleApplyJob = async(id,companyId) => {
       setIsLoading(true);
       console.log(id)
     
       try {
 
-        const response = await fetch(`${Base_Url}/student/apply`, {
+        const response = await fetch(`${Base_Url}/student/apply/${companyId}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -127,6 +113,8 @@ const StudentHome = () => {
                         </CardHeader>
                         <CardContent>
 
+                        <p><span className="font-bold">Company:</span> {job?.company?.name}</p>
+                        <a href={job?.company?.website} target="_blank" rel="noopener noreferrer"><span className="font-bold">Website:</span> {job?.company?.website}</a>
 
                             <p><span className="font-bold">Location:</span> {job.location}</p>
                             <p><span className="font-bold">Min CTC:</span> {job.minCTC} Lac</p>
@@ -134,7 +122,7 @@ const StudentHome = () => {
                         </CardContent>
                         <CardFooter><div className="mt-4">
                             <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-                        onClick={() => handleApplyJob(job.id)}>Apply </button>
+                        onClick={() => handleApplyJob(job.id,job?.company?.id)}>Apply </button>
                         </div></CardFooter>
                     </Card>
                 ))}

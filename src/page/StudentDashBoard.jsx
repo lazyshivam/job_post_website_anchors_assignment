@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
+import moment from 'moment';
 // import CompanyProfileForm from './CompanyProfileForm'; // Assuming you have a CompanyProfileForm component
 // import JobPostingForm from './JobPostingForm'; // Assuming you have a JobPostingForm component
 import {
@@ -18,12 +19,12 @@ import {
 
 const StudentDashboard = () => {
   const [hasProfile, setHasProfile] = useState(false);
-  const [studentProfile, setStudentProfile] = useState(null);
+  const [studentProfile, setStudentProfile] = useState([]);
   const navigate = useNavigate();
 
 
   const [isLoading, setIsLoading] = useState(false);
- 
+
 
   const getStudentDetails = async () => {
     setIsLoading(true);
@@ -67,8 +68,8 @@ const StudentDashboard = () => {
   }, [])
 
   return (
-    <div className="container w-screen border rounded-md h-96 shadow-md mx-auto mt-8">
-      {!studentProfile ? (
+    <div className="container w-screen  mx-auto mt-8">
+      {studentProfile.length === 0 ? (
         <div>
           <h2 className="text-2xl font-bold mb-4">Welcome to Your Student Dashboard</h2>
           <p>You haven't created a student profile yet.</p>
@@ -94,8 +95,38 @@ const StudentDashboard = () => {
           <div className="space-x-4">
 
             <button className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded mt-4"
-              onClick={() => navigate('/home')}>See Posted Job</button>
+              onClick={() => navigate('/')}>See Posted Job</button>
           </div>
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Rupees Transaction History</h2>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {/* Loop through transaction history and render rows */}
+                  {studentProfile[0].transactionHistory && studentProfile[0].transactionHistory.map((transaction, index) => (
+                    <tr key={index}>
+                      <td className="px-6 py-4 whitespace-nowrap">{transaction.type}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{transaction.amount}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{moment(transaction.date).format('YYYY-MM-DD HH:mm:ss')}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{transaction.reason}</td>
+                    </tr>
+                  ))}
+                    {!studentProfile[0].transactionHistory && <div>
+                      <h1 className='text-xl'>Not Found</h1>
+                  </div>}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
       )}
 

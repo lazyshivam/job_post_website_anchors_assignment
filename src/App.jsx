@@ -18,6 +18,7 @@ import CompanyHome from './page/CompanyHome';
 import { ToastContainer, toast } from 'react-toastify';
 import CreateCompanyProfileForm from './page/CreateCompanyProfileForm';
 import CreateStudentProfile from './page/CreateStudentProfile';
+import Error from './page/Error';
 function App() {
   const dispatch = useDispatch();
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,24 +30,24 @@ function App() {
       <Header />
       <ToastContainer/>
       <Routes>
-        <Route path='/' element={<Welcome />} />
         {!isLoggedIn ? (
           <>
+            <Route path='/' element={<Welcome />} />
             <Route path='/register' element={<Register />} />
             <Route path='/login' element={<Login />} />
-
+            <Route path='*' element={<Error />} />
           </>
         ) : (
           isLoggedIn.userType === 'student' ? (
               <>
               <Route path='/createProfile' element={<CreateStudentProfile/>} />
-              <Route path='/home' element={<StudentHome />} />
+              <Route path='/' element={<StudentHome />} />
               <Route path='/dashboard' element={<StudentDashBoard />} />
             </>
           ) : (
                 <>
               <Route path='/createProfile' element={<CreateCompanyProfileForm/>} />
-              <Route path='/home' element={<CompanyHome />} />
+              <Route path='/' element={<CompanyHome />} />
               <Route path='/dashboard' element={<CompanyDashboard />} />
             </>
           )

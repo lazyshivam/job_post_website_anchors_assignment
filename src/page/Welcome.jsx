@@ -20,7 +20,7 @@ const Welcome = () => {
 
                 <div className="flex space-x-4">
                     <Button onClick={() => navigate('/register')}> Register</Button>
-                    <Button onClick={() => navigate('/login')}>LogIn</Button>
+                    <Button onClick={() => navigate('/login')}>Login</Button>
                 </div>
             </div>
         </div>

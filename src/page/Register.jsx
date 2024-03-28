@@ -44,17 +44,23 @@ const Register = () => {
             });
 
             const data = await response.json();
-            if (data && data.status === 400) {
-                throw new Error(data.message);
-            }
+            if (data.code === 200) {
             console.log('OTP sent successfully',data);
-            setIsLoading(false);
+            
             toast.success('Otp sent successfully');
             buttonRef.current.click();
+            }
+            else if (data.code === 400) {
+                toast.warn("User with this email already exists");
+
+            }
+           
         } catch (error) {
             toast.error('Error sending OTP')
             console.error('Error sending OTP:', error);
             // Display error message to the user
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -89,7 +95,7 @@ const Register = () => {
                 console.log('Registration successful:', res); // For debugging
                 toast.success('Registration successful');
                 // After successful registration, redirect to appropriate route
-                navigate('/home');
+                navigate('/dashboard');
             }
             else if (res.code === 400 || res.code===401) {
                 toast.error('Registration failed');

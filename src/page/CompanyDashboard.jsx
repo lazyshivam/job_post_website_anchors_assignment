@@ -1,8 +1,10 @@
 import { Base_Url } from '@/config/config';
+import {cities} from '@/config/cities';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
+import moment from 'moment';
 // import CompanyProfileForm from './CompanyProfileForm'; // Assuming you have a CompanyProfileForm component
 // import JobPostingForm from './JobPostingForm'; // Assuming you have a JobPostingForm component
 import {
@@ -19,20 +21,10 @@ import {
 const CompanyDashboard = () => {
     const [hasProfile, setHasProfile] = useState(false);
     const [showJobPostingForm, setShowJobPostingForm] = useState(false);
-    const [companyProfile, setCompanyProfile] = useState(null);
+    const [companyProfile, setCompanyProfile] = useState([]);
     const navigate = useNavigate();
-    const handleCreateProfile = () => {
-        // Logic to handle profile creation, could be an API request
-        setHasProfile(true);
-    };
 
-    const handlePostJob = () => {
-        setShowJobPostingForm(true);
-    };
 
-    const handleCloseJobPostingForm = () => {
-        setShowJobPostingForm(false);
-    };
 
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -40,22 +32,23 @@ const CompanyDashboard = () => {
         location: '',
         minCTC: '',
         maxCTC: ''
-      });
-    
-      const handleChange = (e) => {
+    });
+
+    const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
-      };
-    
-      const handleSubmit = async(e) => {
-          e.preventDefault();
-          if (!formData.jobRole || !formData.location || !minCTC || !maxCTC) {
-              toast.warn("Please fill the form data");
-              return;
-          }
-        // company/postJob/6600adb45bc5d8b6c00ef376
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setIsLoading(true);
-        console.log(FormData,"JOb Form")
+        if (!formData.jobRole || !formData.location || !minCTC || !maxCTC) {
+            toast.warn("Please fill the form data");
+            return;
+        }
+        // company/postJob/6600adb45bc5d8b6c00ef376
+        // setIsLoading(true);
+        console.log(FormData, "JOb Form")
         try {
 
             const response = await fetch(`${Base_Url}/company/postJob/${companyProfile[0].id}`, {
@@ -72,11 +65,11 @@ const CompanyDashboard = () => {
             if (res.code === 200) {
 
                 toast.success(res.message)
-                navigate('/home');
+                navigate('/');
 
-            } else if (res.code === 400 || res.status === 400) {
-
-                toast.error(res.message)
+            } else if (res.code === 400) {
+                toast.warn(res.message);
+                navigate('/dashboard');
             }
         } catch (error) {
             console.error('Error fetching company profile:', error);
@@ -88,11 +81,11 @@ const CompanyDashboard = () => {
                 location: '',
                 minCTC: '',
                 maxCTC: ''
-              });
+            });
         }
-        
-      };
-    
+
+    };
+
 
     const getCompanyDetails = async () => {
         setIsLoading(true);
@@ -112,7 +105,7 @@ const CompanyDashboard = () => {
             console.log(res);
             if (res.code === 200) {
 
-                toast.success(res.message)
+                // toast.success(res.message)
                 setCompanyProfile(res.data);
 
             } else if (res.code === 400 || res.status === 400) {
@@ -122,9 +115,9 @@ const CompanyDashboard = () => {
         } catch (error) {
             console.error('Error fetching company profile:', error);
             toast.error('Error in fetching company profile. Please try again.');
-            navigate('/login');
-            localStorage.removeItem('accessToken');
-            
+            // navigate('/login');
+            // localStorage.removeItem('accessToken');
+
         } finally {
             setIsLoading(false);
         }
@@ -132,11 +125,13 @@ const CompanyDashboard = () => {
 
     useEffect(() => {
         getCompanyDetails();
-    }, [])
+    }, []);
+
+
 
     return (
-        <div className="container w-screen border rounded-md h-96 shadow-md mx-auto mt-8">
-            {!companyProfile ? (
+        <div className="container w-screen mx-auto mt-8">
+            {companyProfile.length === 0 ? (
                 <div>
                     <h2 className="text-2xl font-bold mb-4">Welcome to Your Company Dashboard</h2>
                     <p>You haven't created a company profile yet.</p>
@@ -157,6 +152,8 @@ const CompanyDashboard = () => {
                         <p><span className="font-bold">Team Size:</span> {companyProfile[0].teamSize}</p>
                         <p><span className="font-bold">Rupees:</span> {companyProfile[0].rupees}</p>
                     </div>
+
+
                     <div className="space-x-4">
                         <Dialog>
                             <DialogTrigger asChild>
@@ -179,12 +176,20 @@ const CompanyDashboard = () => {
                                         </div>
                                         <div className="mb-4">
                                             <label htmlFor="location" className="block text-sm font-bold mb-2">Location:</label>
-                                            <select id="location" name="location" value={formData.location} onChange={handleChange} className="px-4 py-2 border rounded w-full" required>
+                                            <select
+                                                id="location"
+                                                name="location"
+                                                value={formData.location}
+                                                onChange={handleChange}
+                                                className="px-4 py-2 border rounded w-full"
+                                                required
+                                            >
                                                 <option value="">Select Location</option>
-                                                <option value="Mumbai">Mumbai</option>
-                                                <option value="Delhi">Delhi</option>
-                                                <option value="Bangalore">Bangalore</option>
-                                                {/* Add more Indian cities as needed */}
+                                                {cities.map((city,index) => (
+                                                    <option key={`city-${index}`} value={city}>
+                                                    {city}
+                                                  </option>
+                                                ))}
                                             </select>
                                         </div>
                                         <div className="mb-4">
@@ -199,30 +204,45 @@ const CompanyDashboard = () => {
                                     </form>
                                 </div>
                                 <DialogFooter>
-                                        <Button type="submit" onClick={handleSubmit }>Sumbit</Button>
+                                    <Button type="submit" onClick={handleSubmit}>{isLoading ? 'Please wait..' : 'Post Job'}</Button>
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
 
-                        <button className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded mt-4"
-                            onClick={() => navigate('/home')}>See Your Posted Job</button>
+                        <Button className="bg-teal-500 hover:bg-teal-600 text-white "
+                            onClick={() => navigate('/')}>See Your Posted Job</Button>
                     </div>
+
+                    <div>
+                        <h2 className="text-2xl font-bold mb-4">Rupees Transaction History</h2>
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {/* Loop through transaction history and render rows */}
+                                    {companyProfile[0].transactionHistory.map((transaction, index) => (
+                                        <tr key={index}>
+                                            <td className="px-6 py-4 whitespace-nowrap">{transaction.type}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{transaction.amount}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{moment(transaction.date).format('YYYY-MM-DD HH:mm:ss')}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{transaction.reason}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             )}
 
-
-
-
-            {showJobPostingForm && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
-                    <div className="bg-white p-8 rounded-lg">
-                        <button className="absolute top-0 right-0 m-4 text-lg font-bold"
-                            onClick={handleCloseJobPostingForm}>X</button>
-                        <h2 className="text-xl font-bold mb-4">Post a Job</h2>
-                        {/* <JobPostingForm onClose={handleCloseJobPostingForm} /> */}
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

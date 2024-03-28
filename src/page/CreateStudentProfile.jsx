@@ -1,5 +1,6 @@
 import { Base_Url } from '@/config/config'; // Assuming Base_Url is defined in a config file
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify'; // Assuming toast is a notification library
 
 const CreateStudentProfile = () => {
@@ -12,6 +13,8 @@ const CreateStudentProfile = () => {
         profilePic: '',
         location: '',
     });
+
+    const navigate=useNavigate()
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -44,6 +47,7 @@ const CreateStudentProfile = () => {
 
             if (res.code === 200) {
                 toast.success(res.message);
+                navigate('/dashboard');
                 setFormData({ // Clear form data
                     name: '',
                     email: '',

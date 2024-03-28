@@ -49,7 +49,7 @@ const Login = () => {
               console.log('Navigating to /home'); 
               toast(res.message);
             // After successful registration, redirect to appropriate route
-            navigate('/home',{replace:true});
+            navigate('/',{replace:true});
         }
           else if (res.code === 401) {
               toast.error(res.message)
